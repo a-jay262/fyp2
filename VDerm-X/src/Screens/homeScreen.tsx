@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 import type { RootStackParamList } from "../../App";
 import UBottomTabBar from "./UBottomTabBar";
+import { Keyboard } from "react-native";
 import axios from "axios";
 
 const OPENAI_API_KEY = ''
@@ -64,7 +65,6 @@ const HomeScreen = ({ route }: { route: any }) => {
   
     try {
       const botReply = await openAIRequest(input);
-  
       const botMessage = { sender: "bot", text: botReply };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
@@ -74,12 +74,11 @@ const HomeScreen = ({ route }: { route: any }) => {
       ]);
     }
   
-    setInput("");
-  };  
+    setInput(""); // clear input
+    Keyboard.dismiss(); // hide keyboard
+  };
 
   return (
-
-
     <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
@@ -254,8 +253,21 @@ const styles = StyleSheet.create({
     color: "#A5A5A5",
     marginTop: 5,
   },
-  userMessageContainer: { alignSelf: "flex-end", backgroundColor: "#DCF8C6", padding: 8, borderRadius: 8, marginVertical: 2, maxWidth: "75%" },
-  botMessageContainer: { alignSelf: "flex-start", backgroundColor: "#E5E5EA", padding: 8, borderRadius: 8, marginVertical: 2, maxWidth: "75%" },
+  userMessageContainer: { alignSelf: "flex-end",
+    backgroundColor: "#DCF8C6",
+    padding: 5,
+    borderRadius: 35,
+    marginBottom: 8,
+
+    maxWidth: "75%", 
+    marginHorizontal: 7, },
+  botMessageContainer: {  alignSelf: "flex-start",
+    backgroundColor: "#E8E8E8",
+    padding: 10,
+    borderRadius: 35,
+    marginBottom: 8,
+    marginHorizontal: 7, 
+    maxWidth: "75%",},
   inputContainer: { flexDirection: "row", alignItems: "center", padding: 5 },
   input: { flex: 1, borderWidth: 1, borderColor: "#ccc", padding: 10, borderRadius: 5, backgroundColor: "#FFF" },
   sendButton: { marginLeft: 10, backgroundColor: "#007AFF", paddingVertical: 10, paddingHorizontal: 15, borderRadius: 5 },

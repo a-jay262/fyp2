@@ -1,30 +1,74 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../App";
 
 const UBottomTabBar = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Home">>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute();
+
+  const getTabColor = (tab: string) => {
+    return route.name === tab ? "green" : "#A5A5A5"; // Green for active, grey for inactive
+  };
 
   return (
     <View style={styles.bottomNav}>
-      <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate("Home")}>
-        <Ionicons name="chatbubble-ellipses-outline" size={28} color="#A5A5A5" />
-        <Text style={styles.activeNav}>Chats</Text>
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Ionicons
+          name="chatbubble-ellipses-outline"
+          size={28}
+          color={getTabColor("Home")}
+        />
+        <Text style={route.name === "Home" ? styles.activeNav : styles.navTextInactive}>
+          Chats
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate("Vets")}>
-        <MaterialIcons name="pets" size={28} color="#A5A5A5" />
-        <Text style={styles.navTextInactive}>Vets</Text>
+
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => navigation.navigate("Vets")}
+      >
+        <MaterialIcons
+          name="pets"
+          size={28}
+          color={getTabColor("Vets")}
+        />
+        <Text style={route.name === "Vets" ? styles.activeNav : styles.navTextInactive}>
+          Vets
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate("Diagnosis")}>
-        <MaterialIcons name="camera" size={28} color="#A5A5A5" />
-        <Text style={styles.navText}>Diagnosis</Text>
+
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => navigation.navigate("Diagnosis")}
+      >
+        <MaterialIcons
+          name="camera"
+          size={28}
+          color={getTabColor("Diagnosis")}
+        />
+        <Text style={route.name === "Diagnosis" ? styles.activeNav : styles.navTextInactive}>
+          Diagnosis
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate("AllRedZones")}>
-        <Ionicons name="alert-circle-outline" size={24} color="#000" />
-        <Text style={styles.navText}>RedZone</Text>
+
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => navigation.navigate("AllRedZones")}
+      >
+        <Ionicons
+          name="alert-circle-outline"
+          size={24}
+          color={getTabColor("AllRedZones")}
+        />
+        <Text style={route.name === "AllRedZones" ? styles.activeNav : styles.navTextInactive}>
+          RedZone
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -44,14 +88,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   activeNav: {
-    color: "#000",
+    color: "green", // Green color for active tab
     fontWeight: "bold",
   },
-  navText: {
-    color: "#A5A5A5",
-  },
   navTextInactive: {
-    color: "#A5A5A5",
+    color: "#A5A5A5", // Grey color for inactive tabs
   },
 });
 

@@ -77,8 +77,6 @@ const App = () => {
         <Stack.Screen name="vetPendingScreen" component={vetPendingScreen} />
         <Stack.Screen name="VetSchedule" component={VetSchedule} />
         <Stack.Screen name="AllRedZones" component={AllRedZonesScreen} />
-
-        
       </Stack.Navigator>
     </NavigationContainer>
   );

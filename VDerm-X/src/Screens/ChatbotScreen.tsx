@@ -23,7 +23,7 @@ const ChatbotScreen = () => {
 
       const data = await response.json();
       if (data && data.length > 0) {
-        setMessages((prevMessages) => [...prevMessages, userMessage, { sender: "bot", text: data[1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ]?.text || "No response" }]);
+        setMessages((prevMessages) => [...prevMessages, userMessage, { sender: "bot", text: data[1]?.text || "No response" }]);
       }
     } catch (error) {
       console.error("Error sending message:", error);
@@ -53,9 +53,7 @@ const ChatbotScreen = () => {
     </View>
   );
 };
-
 export default ChatbotScreen;
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F5F5F5", padding: 10 },
   chatContainer: { flex: 1, marginBottom: 10 },
