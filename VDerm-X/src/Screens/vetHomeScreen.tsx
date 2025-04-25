@@ -148,7 +148,7 @@ const HomeScreen = () => {
        
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => navigation.navigate("RedZone")}
+          onPress={() => navigation.navigate("AllRedZones")}
         >
           <Ionicons name="alert-circle-outline" size={24} color="#000" />
           <Text style={styles.navText}>Red Zones</Text>

@@ -1,185 +1,161 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL } from '../config';
-import axios from 'axios';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Image } from "react-native";
+import VBottomTabBar from "./VBottomTabBar";
 
-const VetAppointmentScreen = ({ navigation, route }: { navigation: any; route: any }) => {
-  const [appointments, setAppointments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [buttonDisabled, setButtonDisabled] = useState(false);
+const VetAppointmentScreen = () => {
+  const [appointments, setAppointments] = useState([
+    {
+      id: "1",
+      OwnerName: "Bella",
+      appointmentTime: "2025-04-26 10:00 AM",
+      contact: "john@example.com",
+    },
+    {
+      id: "2",
+      OwnerName: "Max",
+      appointmentTime: "2025-04-26 11:00 AM",
+      contact: "jane@example.com",
+    },
+    // Add more appointments as needed
+  ]);
 
-  const vetEmail = route.params.email;
-
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
-
-  const fetchAppointments = async () => {
-    try {
-      console.log(vetEmail);
-      const res = await fetch(
-        `${BASE_URL}/appointments/vet?vetEmail=${encodeURIComponent(vetEmail)}`
-      );
-      const data = await res.json();
-      console.log('Fetched appointments:', data);
-      setAppointments(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Failed to fetch appointments:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleCancelAppointment = (id: string) => {
+    Alert.alert("Appointment Cancelled", "The appointment has been cancelled.");
+    setAppointments(appointments.filter((appointment) => appointment.id !== id));
   };
 
-
-
-  const renderAppointment = ({ item }: { item: any }) => {
-    const timeDate = new Date(item.timeAndDate);
-  
-
-    return (
-      <View style={styles.card}>
-        <Text style={styles.status}>Appointment Booked</Text>
-        <Text style={styles.details}>Name: {item.name}</Text>
-        <Text style={styles.details}>Date: {timeDate.toLocaleDateString()}</Text>
-        <Text style={styles.details}>
-          Time: {timeDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </Text>
-
-        {/* Accept and Reject buttons */}
-        <View style={styles.buttonContainer}>
-
-
-          <TouchableOpacity
-            style={[styles.messageButton, { backgroundColor: '#f46c63' }]}
-            disabled={buttonDisabled}
-          >
-            <Text style={styles.messageButtonText}>Booked Appointment</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
+  const handleCompleteAppointment = (id: string) => {
+    Alert.alert("Appointment Completed", "The appointment has been marked as completed.");
+    setAppointments(appointments.filter((appointment) => appointment.id !== id));
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Header Section */}
       <View style={styles.header}>
-        <Ionicons name="arrow-back-outline" size={24} color="#000" />
-        <Image source={require('../Assets/logo.png')} style={styles.logo} />
-      </View>
+        {/* Profile Icon on the left */}
+        <View style={styles.profileIcon}>
+          <Text style={styles.profileInitial}>J</Text>
+        </View>
 
-      {/* Tabs */}
-      <View style={styles.tabs}>
-        <TouchableOpacity style={styles.activeTab}>
-          <Text style={styles.tabText}>Appointments</Text>
-        </TouchableOpacity>
+        {/* Logo at the center */}
+        <Image
+          source={require("../Assets/logo.png")} // Make sure to update this path
+          style={styles.logo}
+        />
       </View>
 
       {/* Appointment List */}
-      {loading ? (
-        <ActivityIndicator size="large" color="#1abc9c" style={{ marginTop: 20 }} />
-      ) : (
-        <FlatList
-          data={appointments}
-          renderItem={renderAppointment}
-          keyExtractor={(item, index) => (item._id ? item._id.toString() : index.toString())}
-          contentContainerStyle={styles.list}
-        />
-      )}
+      <ScrollView contentContainerStyle={styles.appointmentList}>
+        {appointments.map((appointment) => (
+          <View key={appointment.id} style={styles.card}>
+            <Text style={styles.cardTitle}>Owner Name: {appointment.OwnerName}</Text>
+            <Text style={styles.cardText}>Time: {appointment.appointmentTime}</Text>
+            <Text style={styles.cardText}>Contact: {appointment.contact}</Text>
 
-      {/* Footer Navigation */}
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('VetHome')}>
-          <Ionicons name="chatbubble-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Chats</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('VetHome')}>
-          <Ionicons name="calendar-outline" size={24} color="#000" />
-          <Text style={styles.navText}>My Schedule</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="alert-circle-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Red Zones</Text>
-        </TouchableOpacity>
-      </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, styles.cancelButton]}
+                onPress={() => handleCancelAppointment(appointment.id)}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.completeButton]}
+                onPress={() => handleCompleteAppointment(appointment.id)}
+              >
+                <Text style={styles.buttonText}>Complete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+      <VBottomTabBar />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#ffffff' },
+  container: {
+    flex: 1,
+    backgroundColor: "#F7F8FA",
+    padding: 20,
+  },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: '#fff',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    elevation: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 40, // Adjusted padding to move the logo down
+    paddingBottom: 20,
+    marginBottom: 15,
+  },
+  profileIcon: {
+    width: 40,
+    height: 40,
+    backgroundColor: "#259D8A",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute", // Position it to the left of the logo
+    left: 0,
+  },
+  profileInitial: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
   },
   logo: {
-    width: 100,
-    marginTop: 40,
-    marginRight: 120,
-    height: 40,
-    resizeMode: 'contain',
+    width: 140,
+    height: 60,
+    resizeMode: "contain",
   },
-  tabs: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#f5f5f5',
-    paddingVertical: 10,
+  appointmentList: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
   },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#1abc9c',
-    paddingBottom: 5,
-  },
-  inactiveTab: { paddingBottom: 5 },
-  tabText: { fontSize: 16, fontWeight: 'bold', color: '#000' },
-  list: { paddingHorizontal: 16, paddingBottom: 16 },
   card: {
-    backgroundColor: '#d8f3f5',
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    backgroundColor: "#fff",
+    padding: 15, // Reduced padding
+    borderRadius: 8, // Slightly smaller border radius for a tighter look
+    marginBottom: 12, // Reduced margin between cards
+    shadowColor: "#000",
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 4, // Smaller shadow radius
+    elevation: 2, // Lower elevation for a more subtle shadow
   },
-  status: { fontSize: 16, fontWeight: 'bold', color: '#000', marginBottom: 5 },
-  details: { fontSize: 14, color: '#000', marginBottom: 5 },
-  messageButton: {
-    alignSelf: 'flex-end',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+  cardTitle: {
+    fontSize: 16, // Reduced font size
+    fontWeight: "bold",
+    marginBottom: 8, // Reduced spacing
+  },
+  cardText: {
+    fontSize: 12, // Smaller font size for compactness
+    color: "#444",
+    marginBottom: 4, // Reduced spacing
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 12, // Reduced space above buttons
+  },
+  button: {
+    paddingVertical: 8, // Reduced padding
+    paddingHorizontal: 18, // Reduced padding
     borderRadius: 5,
-    marginVertical: 5,
+    width: "45%",
+    alignItems: "center",
   },
-  messageButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
-  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between' },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
-    backgroundColor: '#f5f5f5',
+  cancelButton: {
+    backgroundColor: "#D93B3B",
   },
-  navItem: { alignItems: 'center' },
-  navText: { fontSize: 12, marginTop: 4, color: '#000' },
+  completeButton: {
+    backgroundColor: "#259D8A",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 12, // Smaller font size for buttons
+    fontWeight: "bold",
+  },
 });
 
 export default VetAppointmentScreen;

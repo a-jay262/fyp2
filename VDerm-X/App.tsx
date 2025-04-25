@@ -21,6 +21,7 @@ import VetListPage from './src/Screens/AdminHome';
 import vetPendingScreen from './src/Screens/vetPendingScreen';
 import VetSchedule from './src/Screens/vetScheduleScreen'; // Import your VetSchedule component
 import AllRedZonesScreen from './src/Screens/AllRedSpot';
+import AppointmentHistoryScreen from './src/Screens/appointmentHistory';
 
 
 // Define the param list for all screens
@@ -43,7 +44,8 @@ export type RootStackParamList = {
   VetList:undefined;
   vetPendingScreen:undefined;
   VetSchedule:undefined;
-  AllRedZones:undefined
+  AllRedZones:undefined;
+  AppointmentHistory: undefined;
   
 };
 
@@ -75,8 +77,10 @@ const App = () => {
         <Stack.Screen name="VetList" component={VetListPage} options={{headerShown:false}}/>
         <Stack.Screen name="Chatbot" component={ChatbotScreen} />
         <Stack.Screen name="vetPendingScreen" component={vetPendingScreen} />
-        <Stack.Screen name="VetSchedule" component={VetSchedule} />
+        <Stack.Screen name="VetSchedule" component={VetSchedule} options={{headerShown:false}}/>
         <Stack.Screen name="AllRedZones" component={AllRedZonesScreen} />
+        <Stack.Screen name="AppointmentHistory" component={AppointmentHistoryScreen} options={{headerShown:false}} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

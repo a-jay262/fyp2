@@ -266,7 +266,7 @@ const VetFormScreen = ({ navigation }: any) => {
         !area ||
         !qualification
       ) {
-        Alert.alert("Error", "All fields are required except availability.");
+        Alert.alert("Error", "All fields are required.");
         return;
       }
 
